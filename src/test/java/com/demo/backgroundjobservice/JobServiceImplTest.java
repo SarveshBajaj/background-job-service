@@ -523,6 +523,49 @@ class JobServiceImplTest {
     }
 
     // -------------------------------------------------------------------------
+    // Reaper double-check: job completed between getByStatus and synchronized(job)
+    // -------------------------------------------------------------------------
+
+    @Test
+    void reaper_doesNotReclaimJobCompletedBeforeLock() throws InterruptedException {
+        service.submit(new JobSpec("email", "data", 5, 3, 100L));
+        AcquiredJob a = service.acquireJob("w1", Set.of("email"));
+
+        Thread.sleep(150); // lease expires
+
+        // Worker completes BEFORE reaper runs
+        service.completeJob("w1", a.jobId(), a.leaseToken(), ExecutionResult.SUCCESS);
+        assertEquals(JobStatus.SUCCEEDED, getJob(a.jobId()).getStatus());
+
+        // Reaper runs — must not touch the already-SUCCEEDED job
+        service.reapExpiredLeases();
+        assertEquals(JobStatus.SUCCEEDED, getJob(a.jobId()).getStatus(), "Reaper must not reclaim a completed job");
+        assertEquals(0, service.dlqSize());
+    }
+
+    // -------------------------------------------------------------------------
+    // Exclusive lock on type A does not block dispatch of type B (same worker)
+    // -------------------------------------------------------------------------
+
+    @Test
+    void exclusiveLock_typeA_doesNotBlockTypeB() {
+        service.submit(JobSpec.of("exclusive_type", "job-a"));
+        service.submit(JobSpec.of("email", "job-b"));
+
+        // Acquire exclusive_type specifically (submit only that type to a dedicated worker)
+        // Use a worker that only handles exclusive_type to guarantee which job it gets
+        service.registerWorker("exclusive-only", Set.of("exclusive_type"));
+        AcquiredJob typeA = service.acquireJob("exclusive-only", Set.of("exclusive_type"));
+        assertNotNull(typeA);
+        assertEquals("exclusive_type", typeA.type());
+
+        // email is a different type — must still be dispatchable despite exclusive_type being locked
+        AcquiredJob typeB = service.acquireJob("w2", Set.of("email"));
+        assertNotNull(typeB, "Exclusive lock on type A must not block dispatch of type B");
+        assertEquals("email", typeB.type());
+    }
+
+    // -------------------------------------------------------------------------
     // Helpers
     // -------------------------------------------------------------------------
 

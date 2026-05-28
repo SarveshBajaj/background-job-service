@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.demo.backgroundjobservice.JobServiceImplTest
 -------------------------------------------------------------------------------
-Tests run: 24, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.080 s -- in com.demo.backgroundjobservice.JobServiceImplTest
+Tests run: 26, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.294 s -- in com.demo.backgroundjobservice.JobServiceImplTest
