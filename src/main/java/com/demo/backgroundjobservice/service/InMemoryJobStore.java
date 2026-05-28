@@ -43,7 +43,7 @@ public class InMemoryJobStore implements JobStore {
     @Override
     public List<Job> getByStatus(JobStatus status) {
         if (status == null) throw new IllegalArgumentException("status must not be null");
-        // snapshot — callers must not mutate the returned list
+        // unmodifiable list snapshot — Job references are live (intentional: service layer owns mutation)
         return jobs.values().stream()
                 .filter(j -> j.getStatus() == status)
                 .toList();
