@@ -8,6 +8,9 @@
 /Users/sarvesh/ArmorCodeProjects/study/LLD/interview/background-job-service/src/main/java/com/demo/backgroundjobservice/model/JobSpec.java
 /Users/sarvesh/ArmorCodeProjects/study/LLD/interview/background-job-service/src/main/java/com/demo/backgroundjobservice/model/JobStatus.java
 /Users/sarvesh/ArmorCodeProjects/study/LLD/interview/background-job-service/src/main/java/com/demo/backgroundjobservice/model/WorkerStats.java
+/Users/sarvesh/ArmorCodeProjects/study/LLD/interview/background-job-service/src/main/java/com/demo/backgroundjobservice/service/ExclusivityManager.java
 /Users/sarvesh/ArmorCodeProjects/study/LLD/interview/background-job-service/src/main/java/com/demo/backgroundjobservice/service/InMemoryJobStore.java
 /Users/sarvesh/ArmorCodeProjects/study/LLD/interview/background-job-service/src/main/java/com/demo/backgroundjobservice/service/JobQueue.java
 /Users/sarvesh/ArmorCodeProjects/study/LLD/interview/background-job-service/src/main/java/com/demo/backgroundjobservice/service/JobStore.java
+/Users/sarvesh/ArmorCodeProjects/study/LLD/interview/background-job-service/src/main/java/com/demo/backgroundjobservice/service/LeaseManager.java
+/Users/sarvesh/ArmorCodeProjects/study/LLD/interview/background-job-service/src/main/java/com/demo/backgroundjobservice/service/WorkerRegistry.java
