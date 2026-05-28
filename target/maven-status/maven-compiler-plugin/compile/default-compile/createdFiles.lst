@@ -1,0 +1,13 @@
+com/demo/backgroundjobservice/model/AcquiredJob.class
+com/demo/backgroundjobservice/exception/WorkerNotFoundException.class
+com/demo/backgroundjobservice/model/JobStatus.class
+com/demo/backgroundjobservice/model/Job.class
+com/demo/backgroundjobservice/service/JobStore.class
+com/demo/backgroundjobservice/model/WorkerStats.class
+com/demo/backgroundjobservice/model/JobSpec.class
+com/demo/backgroundjobservice/model/DLQEntry.class
+com/demo/backgroundjobservice/service/JobQueue.class
+com/demo/backgroundjobservice/service/InMemoryJobStore.class
+com/demo/backgroundjobservice/exception/JobNotFoundException.class
+com/demo/backgroundjobservice/model/ExecutionResult.class
+com/demo/backgroundjobservice/exception/StaleLeaseException.class
