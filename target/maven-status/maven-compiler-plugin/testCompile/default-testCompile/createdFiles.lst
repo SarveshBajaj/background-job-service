@@ -1,2 +1,3 @@
-com/demo/backgroundjobservice/ModelsAndStoreTest.class
 com/demo/backgroundjobservice/LeaseExclusivityRegistryTest.class
+com/demo/backgroundjobservice/JobServiceImplTest.class
+com/demo/backgroundjobservice/ModelsAndStoreTest.class

@@ -11,6 +11,11 @@
 /Users/sarvesh/ArmorCodeProjects/study/LLD/interview/background-job-service/src/main/java/com/demo/backgroundjobservice/service/ExclusivityManager.java
 /Users/sarvesh/ArmorCodeProjects/study/LLD/interview/background-job-service/src/main/java/com/demo/backgroundjobservice/service/InMemoryJobStore.java
 /Users/sarvesh/ArmorCodeProjects/study/LLD/interview/background-job-service/src/main/java/com/demo/backgroundjobservice/service/JobQueue.java
+/Users/sarvesh/ArmorCodeProjects/study/LLD/interview/background-job-service/src/main/java/com/demo/backgroundjobservice/service/JobService.java
+/Users/sarvesh/ArmorCodeProjects/study/LLD/interview/background-job-service/src/main/java/com/demo/backgroundjobservice/service/JobServiceImpl.java
 /Users/sarvesh/ArmorCodeProjects/study/LLD/interview/background-job-service/src/main/java/com/demo/backgroundjobservice/service/JobStore.java
 /Users/sarvesh/ArmorCodeProjects/study/LLD/interview/background-job-service/src/main/java/com/demo/backgroundjobservice/service/LeaseManager.java
 /Users/sarvesh/ArmorCodeProjects/study/LLD/interview/background-job-service/src/main/java/com/demo/backgroundjobservice/service/WorkerRegistry.java
+/Users/sarvesh/ArmorCodeProjects/study/LLD/interview/background-job-service/src/main/java/com/demo/backgroundjobservice/strategy/ExponentialBackoffRetryPolicy.java
+/Users/sarvesh/ArmorCodeProjects/study/LLD/interview/background-job-service/src/main/java/com/demo/backgroundjobservice/strategy/JobHandler.java
+/Users/sarvesh/ArmorCodeProjects/study/LLD/interview/background-job-service/src/main/java/com/demo/backgroundjobservice/strategy/RetryPolicy.java

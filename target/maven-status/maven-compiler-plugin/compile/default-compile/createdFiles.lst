@@ -1,10 +1,16 @@
+com/demo/backgroundjobservice/strategy/JobHandler.class
 com/demo/backgroundjobservice/model/AcquiredJob.class
 com/demo/backgroundjobservice/service/LeaseManager.class
 com/demo/backgroundjobservice/service/ExclusivityManager.class
+com/demo/backgroundjobservice/service/JobService.class
+com/demo/backgroundjobservice/strategy/RetryPolicy.class
 com/demo/backgroundjobservice/exception/WorkerNotFoundException.class
 com/demo/backgroundjobservice/model/JobStatus.class
+com/demo/backgroundjobservice/service/JobServiceImpl.class
 com/demo/backgroundjobservice/model/Job.class
 com/demo/backgroundjobservice/service/JobStore.class
+com/demo/backgroundjobservice/service/JobServiceImpl$1.class
+com/demo/backgroundjobservice/strategy/ExponentialBackoffRetryPolicy.class
 com/demo/backgroundjobservice/model/WorkerStats.class
 com/demo/backgroundjobservice/model/JobSpec.class
 com/demo/backgroundjobservice/model/DLQEntry.class
