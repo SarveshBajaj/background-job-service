@@ -5,6 +5,9 @@ import com.demo.backgroundjobservice.model.DLQEntry;
 import com.demo.backgroundjobservice.model.Job;
 import com.demo.backgroundjobservice.model.JobStatus;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,6 +21,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class InMemoryJobStore implements JobStore {
 
+    private static final Logger log = LoggerFactory.getLogger(InMemoryJobStore.class);
+
     // jobId → Job; ConcurrentHashMap for thread-safe O(1) access
     private final ConcurrentHashMap<String, Job> jobs = new ConcurrentHashMap<>();
 
@@ -30,6 +35,7 @@ public class InMemoryJobStore implements JobStore {
         if (jobs.putIfAbsent(job.getJobId(), job) != null) {
             throw new IllegalArgumentException("Job already exists: " + job.getJobId());
         }
+        log.info("Job saved: jobId={}, type={}, priority={}", job.getJobId(), job.getSpec().type(), job.getSpec().priority());
     }
 
     @Override
@@ -37,6 +43,7 @@ public class InMemoryJobStore implements JobStore {
         if (jobId == null || jobId.isBlank()) throw new IllegalArgumentException("jobId must not be blank");
         Job job = jobs.get(jobId);
         if (job == null) throw new JobNotFoundException(jobId);
+        log.debug("Job fetched: jobId={}, status={}", jobId, job.getStatus());
         return job;
     }
 
@@ -54,6 +61,7 @@ public class InMemoryJobStore implements JobStore {
         if (job == null)                       throw new IllegalArgumentException("job must not be null");
         if (reason == null || reason.isBlank()) throw new IllegalArgumentException("reason must not be blank");
         dlq.add(new DLQEntry(job, reason, Instant.now()));
+        log.warn("Job moved to DLQ: jobId={}, type={}, reason={}, attempts={}", job.getJobId(), job.getSpec().type(), reason, job.getAttemptCount());
     }
 
     @Override

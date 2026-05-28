@@ -2,6 +2,9 @@ package com.demo.backgroundjobservice.service;
 
 import com.demo.backgroundjobservice.model.Job;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -20,6 +23,8 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class JobQueue {
 
+    private static final Logger log = LoggerFactory.getLogger(JobQueue.class);
+
     // Natural order: higher priority first, then older jobs first (FIFO within same priority)
     private static final Comparator<Job> JOB_COMPARATOR =
             Comparator.comparingInt((Job j) -> j.getSpec().priority()).reversed()
@@ -35,6 +40,7 @@ public class JobQueue {
     public void enqueue(Job job) {
         if (job == null) throw new IllegalArgumentException("job must not be null");
         queue.offer(job);
+        log.debug("Job enqueued: jobId={}, type={}, priority={}, queueSize={}", job.getJobId(), job.getSpec().type(), job.getSpec().priority(), queue.size());
     }
 
     /**
@@ -71,6 +77,7 @@ public class JobQueue {
         queue.addAll(skipped);
 
         if (candidates.isEmpty()) {
+            log.debug("No eligible jobs for handledTypes={}", handledTypes);
             return null;
         }
 
@@ -94,6 +101,7 @@ public class JobQueue {
             if (c != selected) queue.offer(c);
         }
 
+        log.debug("Job dispatched: jobId={}, type={}, priority={}", selected.getJobId(), selected.getSpec().type(), selected.getSpec().priority());
         return selected;
     }
 
