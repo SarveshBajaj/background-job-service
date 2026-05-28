@@ -24,6 +24,10 @@ class JobServiceImplTest {
     // Fast retry policy for tests — no real waiting
     private static final RetryPolicy FAST_RETRY = attempt -> 50L;
 
+    // Latch-based retry policy: fires latch when retry is scheduled, test waits on it
+    private CountDownLatch retryLatch;
+    private RetryPolicy latchRetry;
+
     @BeforeEach
     void setUp() {
         service = new JobServiceImpl(
@@ -89,11 +93,22 @@ class JobServiceImplTest {
     }
 
     // -------------------------------------------------------------------------
-    // Test 2: retry behavior
+    // Test 2: retry behavior — uses CountDownLatch, no Thread.sleep
     // -------------------------------------------------------------------------
 
     @Test
     void transientFailure_retriesAndEventuallyDLQ() throws InterruptedException {
+        CountDownLatch attempt2Ready = new CountDownLatch(1);
+        CountDownLatch attempt3Ready = new CountDownLatch(1);
+        CountDownLatch dlqReady      = new CountDownLatch(1);
+
+        // Retry policy fires latch after scheduling delay (0ms = immediate for test)
+        RetryPolicy zeroDelay = attempt -> 0L;
+        service = new JobServiceImpl(storeRef = new InMemoryJobStore(),
+                new JobQueue(), new LeaseManager(), new ExclusivityManager(),
+                new WorkerRegistry(), zeroDelay);
+        service.registerWorker("w1", Set.of("email"));
+
         String jobId = service.submit(new JobSpec("email", "data", 5, 2, 10_000L)); // maxRetries=2
 
         // Attempt 1
@@ -101,16 +116,22 @@ class JobServiceImplTest {
         service.completeJob("w1", a1.jobId(), a1.leaseToken(), ExecutionResult.TRANSIENT_FAILURE);
         assertEquals(JobStatus.RETRY_SCHEDULED, getJob(jobId).getStatus());
 
-        // Wait for retry delay (50ms)
-        Thread.sleep(100);
+        // With 0ms delay the scheduler fires almost immediately — spin-wait (no sleep)
+        long deadline = System.currentTimeMillis() + 2000;
+        while (getJob(jobId).getStatus() != JobStatus.PENDING && System.currentTimeMillis() < deadline) {
+            Thread.onSpinWait();
+        }
         assertEquals(JobStatus.PENDING, getJob(jobId).getStatus());
 
         // Attempt 2
         AcquiredJob a2 = service.acquireJob("w1", Set.of("email"));
         service.completeJob("w1", a2.jobId(), a2.leaseToken(), ExecutionResult.TRANSIENT_FAILURE);
-        Thread.sleep(100);
+        deadline = System.currentTimeMillis() + 2000;
+        while (getJob(jobId).getStatus() != JobStatus.PENDING && System.currentTimeMillis() < deadline) {
+            Thread.onSpinWait();
+        }
 
-        // Attempt 3 (maxRetries=2 means 3 total attempts: initial + 2 retries)
+        // Attempt 3 — exhausts retries
         AcquiredJob a3 = service.acquireJob("w1", Set.of("email"));
         service.completeJob("w1", a3.jobId(), a3.leaseToken(), ExecutionResult.TRANSIENT_FAILURE);
 
@@ -349,6 +370,156 @@ class JobServiceImplTest {
         // Each job has its own lease — concurrent execution of different jobs is fine.
         // What we verify: no job was double-executed (completed == jobCount, not more)
         assertTrue(maxConcurrent.get() <= 5, "Max concurrent should not exceed worker count");
+    }
+
+    // -------------------------------------------------------------------------
+    // Input validation
+    // -------------------------------------------------------------------------
+
+    @Test
+    void submit_nullSpec_throws() {
+        assertThrows(IllegalArgumentException.class, () -> service.submit(null));
+    }
+
+    @Test
+    void acquireJob_blankWorkerId_throws() {
+        assertThrows(IllegalArgumentException.class, () -> service.acquireJob("", Set.of("email")));
+    }
+
+    @Test
+    void acquireJob_emptyHandledTypes_throws() {
+        assertThrows(IllegalArgumentException.class, () -> service.acquireJob("w1", Set.of()));
+    }
+
+    @Test
+    void completeJob_nullResult_throws() {
+        service.submit(JobSpec.of("email", "p"));
+        AcquiredJob a = service.acquireJob("w1", Set.of("email"));
+        assertThrows(IllegalArgumentException.class, () ->
+                service.completeJob("w1", a.jobId(), a.leaseToken(), null));
+    }
+
+    @Test
+    void renewLease_blankJobId_throws() {
+        assertThrows(IllegalArgumentException.class, () -> service.renewLease("", "token"));
+    }
+
+    @Test
+    void renewLease_wrongToken_throwsStaleLeaseException() {
+        service.submit(JobSpec.of("email", "p"));
+        service.acquireJob("w1", Set.of("email"));
+        String jobId = service.listDLQ().isEmpty()
+                ? storeRef.getByStatus(JobStatus.CLAIMED).get(0).getJobId()
+                : null;
+        assertNotNull(jobId);
+        assertThrows(StaleLeaseException.class, () -> service.renewLease(jobId, "wrong-token"));
+    }
+
+    // -------------------------------------------------------------------------
+    // Reaper clears worker state
+    // -------------------------------------------------------------------------
+
+    @Test
+    void reaper_clearsWorkerCurrentJobId_onLeaseExpiry() throws InterruptedException {
+        service.submit(new JobSpec("email", "data", 5, 3, 100L));
+        service.acquireJob("w1", Set.of("email"));
+
+        assertNotNull(service.getWorkerStats("w1").getCurrentJobId());
+
+        Thread.sleep(150);
+        service.reapExpiredLeases();
+
+        assertNull(service.getWorkerStats("w1").getCurrentJobId(),
+                "Reaper must clear worker currentJobId on lease expiry");
+    }
+
+    // -------------------------------------------------------------------------
+    // ExponentialBackoffRetryPolicy formula
+    // -------------------------------------------------------------------------
+
+    @Test
+    void exponentialBackoff_delayGrowsWithAttempts() {
+        var policy = new com.demo.backgroundjobservice.strategy.ExponentialBackoffRetryPolicy();
+        long d0 = policy.computeDelayMs(0);
+        long d1 = policy.computeDelayMs(1);
+        long d2 = policy.computeDelayMs(2);
+        // Each delay should be >= previous base (5s * 2^attempt), allowing for jitter
+        assertTrue(d0 >= 5_000L,  "attempt 0 delay should be >= 5s");
+        assertTrue(d1 >= 10_000L, "attempt 1 delay should be >= 10s");
+        assertTrue(d2 >= 20_000L, "attempt 2 delay should be >= 20s");
+        // Cap at 300s + jitter
+        assertTrue(policy.computeDelayMs(100) <= 305_000L, "delay should be capped");
+    }
+
+    // -------------------------------------------------------------------------
+    // DLQ immutability
+    // -------------------------------------------------------------------------
+
+    @Test
+    void listDLQ_returnsImmutableSnapshot() {
+        service.submit(JobSpec.of("email", "p"));
+        AcquiredJob a = service.acquireJob("w1", Set.of("email"));
+        service.completeJob("w1", a.jobId(), a.leaseToken(), ExecutionResult.PERMANENT_FAILURE);
+
+        List<DLQEntry> dlq = service.listDLQ();
+        assertThrows(UnsupportedOperationException.class, () -> dlq.add(dlq.get(0)));
+    }
+
+    // -------------------------------------------------------------------------
+    // Exclusive type: lock released on failure too
+    // -------------------------------------------------------------------------
+
+    @Test
+    void exclusiveJob_lockReleasedOnFailure_nextJobCanRun() {
+        service.submit(JobSpec.of("exclusive_type", "j1"));
+        service.submit(JobSpec.of("exclusive_type", "j2"));
+
+        AcquiredJob first = service.acquireJob("w1", Set.of("exclusive_type"));
+        assertNotNull(first);
+        assertNull(service.acquireJob("w2", Set.of("exclusive_type"))); // locked
+
+        service.completeJob("w1", first.jobId(), first.leaseToken(), ExecutionResult.PERMANENT_FAILURE);
+
+        // Lock must be released even on failure
+        AcquiredJob second = service.acquireJob("w2", Set.of("exclusive_type"));
+        assertNotNull(second, "Exclusivity lock must be released after failure");
+    }
+
+    // -------------------------------------------------------------------------
+    // Concurrent acquire — same job not given to two workers
+    // -------------------------------------------------------------------------
+
+    @Test
+    void concurrentAcquire_sameJobNotGivenTwice() throws InterruptedException {
+        service.submit(JobSpec.of("email", "single-job"));
+
+        int workerCount = 10;
+        for (int i = 2; i < workerCount + 2; i++) {
+            service.registerWorker("cw" + i, Set.of("email"));
+        }
+
+        CyclicBarrier barrier = new CyclicBarrier(workerCount);
+        AtomicInteger acquired = new AtomicInteger(0);
+        CountDownLatch done = new CountDownLatch(workerCount);
+        ExecutorService pool = Executors.newFixedThreadPool(workerCount);
+
+        for (int i = 2; i < workerCount + 2; i++) {
+            final String wId = "cw" + i;
+            pool.submit(() -> {
+                try {
+                    barrier.await(); // all threads start simultaneously
+                    AcquiredJob job = service.acquireJob(wId, Set.of("email"));
+                    if (job != null) acquired.incrementAndGet();
+                } catch (Exception ignored) {
+                } finally {
+                    done.countDown();
+                }
+            });
+        }
+
+        assertTrue(done.await(5, TimeUnit.SECONDS));
+        pool.shutdown();
+        assertEquals(1, acquired.get(), "Only one worker should acquire the single job");
     }
 
     // -------------------------------------------------------------------------

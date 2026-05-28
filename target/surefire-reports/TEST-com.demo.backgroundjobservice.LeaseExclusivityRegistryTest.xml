@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.demo.backgroundjobservice.LeaseExclusivityRegistryTest" time="0.02" tests="19" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.demo.backgroundjobservice.LeaseExclusivityRegistryTest" time="0.018" tests="19" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="21"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -12,7 +12,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="IN"/>
     <property name="sun.boot.library.path" value="/Library/Java/JavaVirtualMachines/jdk-21.jdk/Contents/Home/lib"/>
-    <property name="sun.java.command" value="/Users/sarvesh/ArmorCodeProjects/study/LLD/interview/background-job-service/target/surefire/surefirebooter-20260528180147867_3.jar /Users/sarvesh/ArmorCodeProjects/study/LLD/interview/background-job-service/target/surefire 2026-05-28T18-01-47_812-jvmRun1 surefire-20260528180147867_1tmp surefire_0-20260528180147867_2tmp"/>
+    <property name="sun.java.command" value="/Users/sarvesh/ArmorCodeProjects/study/LLD/interview/background-job-service/target/surefire/surefirebooter-20260528180425732_3.jar /Users/sarvesh/ArmorCodeProjects/study/LLD/interview/background-job-service/target/surefire 2026-05-28T18-04-25_677-jvmRun1 surefire-20260528180425732_1tmp surefire_0-20260528180425732_2tmp"/>
     <property name="http.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="/Users/sarvesh/ArmorCodeProjects/study/LLD/interview/background-job-service/target/test-classes:/Users/sarvesh/ArmorCodeProjects/study/LLD/interview/background-job-service/target/classes:/Users/sarvesh/.m2/repository/org/junit/jupiter/junit-jupiter/5.10.0/junit-jupiter-5.10.0.jar:/Users/sarvesh/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.10.0/junit-jupiter-api-5.10.0.jar:/Users/sarvesh/.m2/repository/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar:/Users/sarvesh/.m2/repository/org/junit/platform/junit-platform-commons/1.10.0/junit-platform-commons-1.10.0.jar:/Users/sarvesh/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/Users/sarvesh/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.10.0/junit-jupiter-params-5.10.0.jar:/Users/sarvesh/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.10.0/junit-jupiter-engine-5.10.0.jar:/Users/sarvesh/.m2/repository/org/junit/platform/junit-platform-engine/1.10.0/junit-platform-engine-1.10.0.jar:/Users/sarvesh/.m2/repository/org/slf4j/slf4j-simple/2.0.9/slf4j-simple-2.0.9.jar:/Users/sarvesh/.m2/repository/org/slf4j/slf4j-api/2.0.9/slf4j-api-2.0.9.jar:"/>
@@ -29,7 +29,7 @@
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="apple.awt.application.name" value="ForkedBooter"/>
-    <property name="surefire.real.class.path" value="/Users/sarvesh/ArmorCodeProjects/study/LLD/interview/background-job-service/target/surefire/surefirebooter-20260528180147867_3.jar"/>
+    <property name="surefire.real.class.path" value="/Users/sarvesh/ArmorCodeProjects/study/LLD/interview/background-job-service/target/surefire/surefirebooter-20260528180425732_3.jar"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="java.runtime.version" value="21.0.3+7-LTS-152"/>
@@ -61,7 +61,7 @@
     <system-err><![CDATA[[main] DEBUG com.demo.backgroundjobservice.service.ExclusivityManager - Exclusivity lock acquired: type=resize_image
 ]]></system-err>
   </testcase>
-  <testcase name="register_and_getStats_roundtrip" classname="com.demo.backgroundjobservice.LeaseExclusivityRegistryTest" time="0.0">
+  <testcase name="register_and_getStats_roundtrip" classname="com.demo.backgroundjobservice.LeaseExclusivityRegistryTest" time="0.001">
     <system-err><![CDATA[[main] INFO com.demo.backgroundjobservice.service.WorkerRegistry - Worker registered: workerId=w1, types=[send_email]
 ]]></system-err>
   </testcase>
@@ -74,18 +74,18 @@
 [main] DEBUG com.demo.backgroundjobservice.service.ExclusivityManager - Exclusivity lock acquired: type=type_b
 ]]></system-err>
   </testcase>
-  <testcase name="validate_afterClear_throwsStaleLeaseException" classname="com.demo.backgroundjobservice.LeaseExclusivityRegistryTest" time="0.001">
-    <system-err><![CDATA[[main] DEBUG com.demo.backgroundjobservice.service.LeaseManager - Lease issued: jobId=263c8271-0d3b-4381-b2de-ff03c930bc17, token=e27cef34-7f56-4843-a301-121c5632d8f7, expiresAt=1779971519328
-[main] DEBUG com.demo.backgroundjobservice.service.LeaseManager - Lease cleared: jobId=263c8271-0d3b-4381-b2de-ff03c930bc17
-[main] WARN com.demo.backgroundjobservice.service.LeaseManager - Stale lease rejected: jobId=263c8271-0d3b-4381-b2de-ff03c930bc17, presented=e27cef34-7f56-4843-a301-121c5632d8f7, current=null
+  <testcase name="validate_afterClear_throwsStaleLeaseException" classname="com.demo.backgroundjobservice.LeaseExclusivityRegistryTest" time="0.0">
+    <system-err><![CDATA[[main] DEBUG com.demo.backgroundjobservice.service.LeaseManager - Lease issued: jobId=08beb2cc-3e3c-42c0-8c4a-9ca8283a4039, token=fe9a0720-0fa9-4d46-86d2-0d47491ec2cb, expiresAt=1779971677152
+[main] DEBUG com.demo.backgroundjobservice.service.LeaseManager - Lease cleared: jobId=08beb2cc-3e3c-42c0-8c4a-9ca8283a4039
+[main] WARN com.demo.backgroundjobservice.service.LeaseManager - Stale lease rejected: jobId=08beb2cc-3e3c-42c0-8c4a-9ca8283a4039, presented=fe9a0720-0fa9-4d46-86d2-0d47491ec2cb, current=null
 ]]></system-err>
   </testcase>
   <testcase name="validate_correctToken_passes" classname="com.demo.backgroundjobservice.LeaseExclusivityRegistryTest" time="0.001">
-    <system-err><![CDATA[[main] DEBUG com.demo.backgroundjobservice.service.LeaseManager - Lease issued: jobId=5a678325-5c3d-4f0d-b8fa-01e1be937ba7, token=ebe9338d-6a7d-4218-a3b7-b3e9e98050fe, expiresAt=1779971519330
+    <system-err><![CDATA[[main] DEBUG com.demo.backgroundjobservice.service.LeaseManager - Lease issued: jobId=c7e7d8dd-109c-4f1a-bfe9-b3bec6dc8681, token=bdcd792b-505b-434f-aa8a-d123a2e25be3, expiresAt=1779971677153
 ]]></system-err>
   </testcase>
   <testcase name="issueLease_setsTokenAndExpiry" classname="com.demo.backgroundjobservice.LeaseExclusivityRegistryTest" time="0.001">
-    <system-err><![CDATA[[main] DEBUG com.demo.backgroundjobservice.service.LeaseManager - Lease issued: jobId=009e043c-9ae4-4e70-9e6f-b63e49ae788b, token=f1517ce6-27b6-43dd-bad8-b2bade9578f6, expiresAt=1779971519331
+    <system-err><![CDATA[[main] DEBUG com.demo.backgroundjobservice.service.LeaseManager - Lease issued: jobId=4b909b48-2b00-425a-8a9a-54977005bd18, token=ffd53a8b-4986-48c1-b1e7-bbe79d4f9ece, expiresAt=1779971677154
 ]]></system-err>
   </testcase>
   <testcase name="markBusy_and_markIdle_updatesStats" classname="com.demo.backgroundjobservice.LeaseExclusivityRegistryTest" time="0.0">
@@ -101,9 +101,9 @@
 [main] DEBUG com.demo.backgroundjobservice.service.ExclusivityManager - Exclusivity lock acquired: type=resize_image
 ]]></system-err>
   </testcase>
-  <testcase name="clearLease_nullsTokenAndExpiry" classname="com.demo.backgroundjobservice.LeaseExclusivityRegistryTest" time="0.0">
-    <system-err><![CDATA[[main] DEBUG com.demo.backgroundjobservice.service.LeaseManager - Lease issued: jobId=4b72849b-c9e1-446e-a809-ff00b9c40f96, token=2c55d39f-8e63-4a88-af4f-345d07ac75ac, expiresAt=1779971519332
-[main] DEBUG com.demo.backgroundjobservice.service.LeaseManager - Lease cleared: jobId=4b72849b-c9e1-446e-a809-ff00b9c40f96
+  <testcase name="clearLease_nullsTokenAndExpiry" classname="com.demo.backgroundjobservice.LeaseExclusivityRegistryTest" time="0.001">
+    <system-err><![CDATA[[main] DEBUG com.demo.backgroundjobservice.service.LeaseManager - Lease issued: jobId=76a470d9-62c4-499d-b5c8-c82f2098ef15, token=0da7f971-2331-417e-a696-8714e202c3cf, expiresAt=1779971677156
+[main] DEBUG com.demo.backgroundjobservice.service.LeaseManager - Lease cleared: jobId=76a470d9-62c4-499d-b5c8-c82f2098ef15
 ]]></system-err>
   </testcase>
   <testcase name="findWorkerByLeaseToken_returnsCorrectWorker" classname="com.demo.backgroundjobservice.LeaseExclusivityRegistryTest" time="0.0">
@@ -145,8 +145,8 @@
 ]]></system-err>
   </testcase>
   <testcase name="validate_wrongToken_throwsStaleLeaseException" classname="com.demo.backgroundjobservice.LeaseExclusivityRegistryTest" time="0.001">
-    <system-err><![CDATA[[main] DEBUG com.demo.backgroundjobservice.service.LeaseManager - Lease issued: jobId=49bdb00c-9124-4bdd-be77-4de530189047, token=0d714557-ed74-4e0e-a0cb-71809a5f12b2, expiresAt=1779971519336
-[main] WARN com.demo.backgroundjobservice.service.LeaseManager - Stale lease rejected: jobId=49bdb00c-9124-4bdd-be77-4de530189047, presented=wrong-token, current=0d714557-ed74-4e0e-a0cb-71809a5f12b2
+    <system-err><![CDATA[[main] DEBUG com.demo.backgroundjobservice.service.LeaseManager - Lease issued: jobId=219ff376-52ff-45b2-9552-a2a60ef94147, token=7ce98401-174a-4263-b51b-441cd7fb0983, expiresAt=1779971677159
+[main] WARN com.demo.backgroundjobservice.service.LeaseManager - Stale lease rejected: jobId=219ff376-52ff-45b2-9552-a2a60ef94147, presented=wrong-token, current=7ce98401-174a-4263-b51b-441cd7fb0983
 ]]></system-err>
   </testcase>
   <testcase name="allStats_returnsAllWorkers" classname="com.demo.backgroundjobservice.LeaseExclusivityRegistryTest" time="0.0">
@@ -155,8 +155,8 @@
 ]]></system-err>
   </testcase>
   <testcase name="extend_increasesExpiry" classname="com.demo.backgroundjobservice.LeaseExclusivityRegistryTest" time="0.006">
-    <system-err><![CDATA[[main] DEBUG com.demo.backgroundjobservice.service.LeaseManager - Lease issued: jobId=ef089726-897b-4b78-8e89-bfeb37361537, token=b3ed2c45-64cd-4d79-8add-fd7e49d685ff, expiresAt=1779971519338
-[main] DEBUG com.demo.backgroundjobservice.service.LeaseManager - Lease extended: jobId=ef089726-897b-4b78-8e89-bfeb37361537, newExpiresAt=1779971519344
+    <system-err><![CDATA[[main] DEBUG com.demo.backgroundjobservice.service.LeaseManager - Lease issued: jobId=572839ca-e2ab-400d-8814-9a526b78029a, token=c672010c-a587-4258-a2c2-7e8b880d1bb8, expiresAt=1779971677161
+[main] DEBUG com.demo.backgroundjobservice.service.LeaseManager - Lease extended: jobId=572839ca-e2ab-400d-8814-9a526b78029a, newExpiresAt=1779971677166
 ]]></system-err>
   </testcase>
   <testcase name="isLocked_reflectsState" classname="com.demo.backgroundjobservice.LeaseExclusivityRegistryTest" time="0.0">
