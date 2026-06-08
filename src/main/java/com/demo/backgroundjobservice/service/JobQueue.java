@@ -87,7 +87,7 @@ public class JobQueue {
                 .sum();
         int rand = ThreadLocalRandom.current().nextInt(totalWeight);
         int cumulative = 0;
-        Job selected = candidates.getLast(); // fallback to last (shouldn't be needed)
+        Job selected = candidates.get(candidates.size() - 1); // fallback to last (shouldn't be needed)
         for (Job c : candidates) {
             cumulative += c.getSpec().priority() + 1;
             if (rand < cumulative) {

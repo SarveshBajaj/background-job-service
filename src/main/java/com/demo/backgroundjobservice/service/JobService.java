@@ -52,6 +52,8 @@ public interface JobService {
      */
     void completeJob(String workerId, String jobId, String leaseToken, ExecutionResult result);
 
+    void cancelJob(String jobId);
+
     /**
      * Renews the lease on a claimed job, extending its visibility timeout.
      *

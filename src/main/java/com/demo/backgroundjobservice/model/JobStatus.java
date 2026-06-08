@@ -12,12 +12,13 @@ public enum JobStatus {
     CLAIMED,
     SUCCEEDED,
     RETRY_SCHEDULED,
+    CANCELLED,
     FAILED;
 
     private static final Map<JobStatus, Set<JobStatus>> VALID_TRANSITIONS = Map.of(
-            PENDING,          Set.of(CLAIMED),
+            PENDING,          Set.of(CLAIMED, CANCELLED),
             CLAIMED,          Set.of(SUCCEEDED, FAILED, RETRY_SCHEDULED, PENDING), // PENDING = lease expiry path
-            RETRY_SCHEDULED,  Set.of(PENDING),
+            RETRY_SCHEDULED,  Set.of(PENDING, CANCELLED),
             SUCCEEDED,        Set.of(),
             FAILED,           Set.of()
     );

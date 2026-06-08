@@ -170,6 +170,17 @@ public class JobServiceImpl implements JobService, AutoCloseable {
         }
     }
 
+    @Override
+    public void cancelJob(String jobId) {
+        Job job = jobStore.get(jobId);
+        if(job == null) throw new IllegalArgumentException("jobId must not be null");
+        synchronized (job) {
+            job.getStatus().validateTransition(JobStatus.CANCELLED);
+            job.setStatus(JobStatus.CANCELLED);
+        }
+//        System.out.printf("Job status: jobId=%s\n", job.getStatus());
+    }
+
     // -------------------------------------------------------------------------
     // Lease renewal
     // -------------------------------------------------------------------------

@@ -140,6 +140,18 @@ class JobServiceImplTest {
         assertEquals(DLQEntry.REASON_MAX_RETRIES, service.listDLQ().get(0).reason());
     }
 
+    @Test
+    void test_cancel_job() throws InterruptedException {
+        RetryPolicy zeroDelay = attempt -> 0L;
+        service = new JobServiceImpl(storeRef = new InMemoryJobStore(),
+                new JobQueue(), new LeaseManager(), new ExclusivityManager(),
+                new WorkerRegistry(), zeroDelay);
+//        service.registerWorker("w1", Set.of("email"));
+
+        String jobId = service.submit(new JobSpec("email", "data", 5, 2, 10_000L));
+        service.cancelJob(jobId);
+    }
+
     // -------------------------------------------------------------------------
     // Test 3: lease renewal happy path
     // -------------------------------------------------------------------------
